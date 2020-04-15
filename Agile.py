@@ -14,7 +14,7 @@ class Agile:
     def get_times_below(self, in_d, limit):
         ret_d = {}
         for time, rate in in_d.items():
-            if rate < limit:
+            if rate <= limit:
                 ret_d[time] = rate
         return ret_d
 
