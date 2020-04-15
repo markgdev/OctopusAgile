@@ -182,3 +182,4 @@ if __name__ == "__main__":
     rates = myagile.get_rates_delta(1)['date_rates']
     low_rates = myagile.get_times_below(rates, 0)
     print(low_rates)
+    print(myagile.get_min_time_run(3, rates))
