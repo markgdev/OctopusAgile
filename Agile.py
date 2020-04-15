@@ -5,9 +5,18 @@ import collections
 
 class Agile:
     area_code = None
+    base_url = None
 
     def __init__(self, area_code):
         self.area_code = area_code
+        self.base_url = 'https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs'
+
+    def get_times_below(self, in_d, limit):
+        ret_d = {}
+        for time, rate in in_d.items():
+            if rate < limit:
+                ret_d[time] = rate
+        return ret_d
 
     def get_min_times(self, num, in_d, requirements):
         ret_d = {}
@@ -79,14 +88,18 @@ class Agile:
         # print(date_from)
         return self.get_rates(date_from, date_to)
 
-    def get_rates(self, date_from, date_to):
+    def get_raw_rates(self, date_from, date_to):
         date_from = f"?period_from={ date_from }"
         date_to = f"&period_to={ date_to }"
         headers = {'content-type': 'application/json'}
-        r = requests.get(f'https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/'
+        r = requests.get(f'{self.base_url}/'
                          f'E-1R-AGILE-18-02-21-{self.area_code}/'
                          f'standard-unit-rates/{ date_from }{ date_to }', headers=headers)
         results = r.json()["results"]
+        return results
+
+    def get_rates(self, date_from, date_to):
+        results = self.get_raw_rates(date_from, date_to)
 
         date_rates = collections.OrderedDict()
 
@@ -122,7 +135,7 @@ class Agile:
             mean_price = sum(rate_list)/len(rate_list)
             low_mean_price = sum(low_rate_list)/len(low_rate_list)
 
-            cheapest6 = self.get_min_times(6, date_rates)
+            cheapest6 = self.get_min_times(6, date_rates, [])
             day = datetime.strptime(next(iter(date_rates)), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d")
 
             minTimeHrs = self.get_min_time_run(4, date_rates)
@@ -164,3 +177,8 @@ class Agile:
         print(f"Num Days:        {days}")
 
         # print(all_rates)
+if __name__ == "__main__":
+    myagile = Agile("L")
+    rates = myagile.get_rates_delta(1)['date_rates']
+    low_rates = myagile.get_times_below(rates, 0)
+    print(low_rates)
