@@ -2,6 +2,9 @@
 Init with the region code (Don't include the _) as per: https://en.wikipedia.org/wiki/Distribution_network_operator
 
 ## Methods
+### Time format
+All time formats are "%Y-%m-%dT%H:%M:%SZ" e.g. 2020-04-16T06:00:00Z
+
 ### get_raw_rates(date_from, date_to)
 Returns the raw data as given to us by the API
 
