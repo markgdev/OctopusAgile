@@ -18,7 +18,6 @@ setuptools.setup(
   download_url = 'https://github.com/markgdev/OctopusAgile/archive/v0.0.4.tar.gz',    # I explain this later on
   keywords = ['Octopus', 'Agile'],   # Keywords that define your package best
   install_requires=[            # I get to this in a second
-          'collections',
           'datetime',
           'requests',
           ],
