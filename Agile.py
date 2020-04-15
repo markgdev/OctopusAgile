@@ -68,7 +68,6 @@ class Agile:
 
 
     def get_rates_delta(self, day_delta):
-        # headers = {'content-type': 'application/json'}
         minute = 00
         if datetime.now().minute > 30:
             minute = 30
