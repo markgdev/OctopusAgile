@@ -30,7 +30,7 @@ Get a date_rate dict of any times below "limit"
 
 in_d is a date_rate dict.
 
-### get_min_times(self, num, in_d, requirements)
+### get_min_times(num, in_d, requirements)
 Get a date rate dict of "num" number of time periods in in_d.
 
 in_d is a date_rate dict.
