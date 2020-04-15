@@ -64,22 +64,16 @@ class Agile:
                 else:
                     min_key = min(avgs, key=avgs.get)
                     return {min_key: avgs[min_key]}
-            # print(keys[index], this_avg, sum(this_avg)/slots)
             avgs[keys[index]] = sum(this_avg)/slots
 
 
     def get_rates_delta(self, day_delta):
-        # headers = {'content-type': 'application/json'}
         minute = 00
         if datetime.now().minute > 30:
             minute = 30
         prev_day = date.today() - timedelta(days=day_delta)
         this_day = date.today() - timedelta(days=day_delta-1)
 
-        # print(prev_day.strftime('%Y-%m-%d'), this_day.strftime('%Y-%m-%d'))
-
-        # date_from = f"?period_from={ datetime.now().year }-{ datetime.now().month }-" \
-        #             f"{ datetime.now().day }T{ datetime.now().hour }:{ minute }"
         date_from = f"{ prev_day.strftime('%Y-%m-%d') }T00:00"
         date_to = f"{ this_day.strftime('%Y-%m-%d') }T00:00"
         # print(date_from)
@@ -92,9 +86,6 @@ class Agile:
         r = requests.get(f'https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs/'
                          f'E-1R-AGILE-18-02-21-{self.area_code}/'
                          f'standard-unit-rates/{ date_from }{ date_to }', headers=headers)
-        # print(json.dumps(r.json(), indent=4))
-        # print(r.content)
-        # print(r.url)
         results = r.json()["results"]
 
         date_rates = collections.OrderedDict()
@@ -107,20 +98,19 @@ class Agile:
             valid_from = result["valid_from"]
             valid_to = result["valid_to"]
             date_rates[valid_from] = price
-            # print(valid_from)
             rate_list.append(price)
             if price < 15:
                 low_rate_list.append(price)
 
         return {"date_rates": date_rates, "rate_list": rate_list, "low_rate_list": low_rate_list}
 
-    def summary(self):
+    def summary(self, days, daily_sum=False):
         all_rates = {}
         all_rates_list = []
         all_low_rates_list = []
         water_rates = []
-        days=0
-        for i in range(0, 1):
+        day_count = 0
+        for i in range(0, days):
             rates = self.get_rates_delta(i)
             rate_list = rates["rate_list"]
             low_rate_list = rates["low_rate_list"]
@@ -133,7 +123,6 @@ class Agile:
             low_mean_price = sum(low_rate_list)/len(low_rate_list)
 
             cheapest6 = self.get_min_times(6, date_rates)
-            # day = datetime.fromisoformat(next(iter(date_rates)))
             day = datetime.strptime(next(iter(date_rates)), '%Y-%m-%dT%H:%M:%SZ').strftime("%Y-%m-%d")
 
             minTimeHrs = self.get_min_time_run(4, date_rates)
@@ -141,20 +130,20 @@ class Agile:
             minTimeHrsRate = minTimeHrs[list(minTimeHrs.keys())[0]]
             water_rates.append(minTimeHrsRate)
 
-            # print(f"({day})                {cheapest6}")
-            # print(f"({day}) Avg Price:     {mean_price}")
-            # print(f"({day}) Low Avg Price: {low_mean_price}")
-            # print(f"({day}) Min Price:     {min(rate_list)}")
-            # print(f"({day}) Max Price:     {max(rate_list)}")
-            # print(f"({day}) Min 4 Hr Run:  {minTimeHrsTime}: {minTimeHrsRate}")
-            days+=1
-            print(".", end="")
-            if days%50 == 0:
-                print()
+            if daily_sum:
+                print(f"({day})                {cheapest6}")
+                print(f"({day}) Avg Price:     {mean_price}")
+                print(f"({day}) Low Avg Price: {low_mean_price}")
+                print(f"({day}) Min Price:     {min(rate_list)}")
+                print(f"({day}) Max Price:     {max(rate_list)}")
+                print(f"({day}) Min 4 Hr Run:  {minTimeHrsTime}: {minTimeHrsRate}")
+            else:
+                print(".", end="")
+                if day_count%50 == 0:
+                    print()
+                day_count+=1
         print()
 
-
-        # # print(f"({day}) Avg Price: {mean_price}")
         overall_min = min(all_rates, key=all_rates.get)
         overall_max = max(all_rates, key=all_rates.get)
 
