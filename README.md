@@ -2,7 +2,7 @@
 Init with the region code (Don't include the _) as per: https://en.wikipedia.org/wiki/Distribution_network_operator
 
 ## Referral code
-Feel free to use my referral code and get £50 credit to your account (as well as mine): https://octopus.energy/friend-referral/
+Feel free to use my referral code and get £50 credit to your account (as well as mine): https://share.octopus.energy/lilac-bison-793
 
 ## Methods
 ### Time format
