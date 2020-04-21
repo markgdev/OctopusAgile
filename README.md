@@ -42,5 +42,20 @@ Requirements a list of dicts with details of particular times that must be inclu
 
 Example, must have 2 slots between 1900 and 0600: {'slots': 2, 'time_from': '2020-04-15T19:00:00Z', 'time_to': '2020-04-16T06:00:00Z'}
 
+### get_area_code()
+Return the area code that is being used
+
+### get_new_rates()
+Return all available future rates
+
+### get_previous_rate()
+Return the previous period rate
+
+### get_current_rate()
+Return the current period rate
+
+### get_next_rate()
+Return the next period rate
+
 ### get_max_times(num, in_d)
 Get a date_rate dict of "num" number of max periods
