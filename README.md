@@ -1,6 +1,9 @@
 # OctopusAgile
 Init with the region code (Don't include the _) as per: https://en.wikipedia.org/wiki/Distribution_network_operator
 
+## Referral code
+Feel free to use my referral code and get £50 credit to your account (as well as mine): https://share.octopus.energy/lilac-bison-793
+
 ## Methods
 ### Time format
 All time formats are "%Y-%m-%dT%H:%M:%SZ" e.g. 2020-04-16T06:00:00Z
@@ -38,6 +41,21 @@ in_d is a date_rate dict.
 Requirements a list of dicts with details of particular times that must be includes in the returned date_rate dict.
 
 Example, must have 2 slots between 1900 and 0600: {'slots': 2, 'time_from': '2020-04-15T19:00:00Z', 'time_to': '2020-04-16T06:00:00Z'}
+
+### get_area_code()
+Return the area code that is being used
+
+### get_new_rates()
+Return all available future rates
+
+### get_previous_rate()
+Return the previous period rate
+
+### get_current_rate()
+Return the current period rate
+
+### get_next_rate()
+Return the next period rate
 
 ### get_max_times(num, in_d)
 Get a date_rate dict of "num" number of max periods
