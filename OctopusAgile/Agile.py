@@ -2,10 +2,20 @@ import requests
 from datetime import datetime, timedelta, date
 import collections
 
+import logging
+_LOGGER = logging.getLogger("OctopusAgile")
+
 
 class Agile:
     area_code = None
     base_url = None
+
+    def round_time(self, t):
+    # Rounds to nearest half hour
+        minute = 00
+        if t.minute//30 == 1:
+            minute = 30
+        return (t.replace(second=0, microsecond=0, minute=minute, hour=t.hour))
 
     def __init__(self, area_code):
         self.area_code = area_code
@@ -17,6 +27,9 @@ class Agile:
             if rate <= limit:
                 ret_d[time] = rate
         return ret_d
+    
+    def get_area_code(self):
+        return self.area_code
 
     def get_min_times(self, num, in_d, requirements):
         ret_d = {}
@@ -60,7 +73,7 @@ class Agile:
 
 
     def get_min_time_run(self, hours, in_d):
-        slots = hours*2
+        slots = int(hours*2)
         d = {}
         d.update(collections.OrderedDict(reversed(list(in_d.items()))))  # Dict was in wrong order
         keys = list(d.keys())
@@ -88,17 +101,25 @@ class Agile:
         # print(date_from)
         return self.get_rates(date_from, date_to)
 
-    def get_raw_rates(self, date_from, date_to):
+    def get_raw_rates(self, date_from, date_to=None):
         date_from = f"?period_from={ date_from }"
-        date_to = f"&period_to={ date_to }"
+        if date_to is not None:
+            date_to = f"&period_to={ date_to }"
+        else:
+            date_to = ""
         headers = {'content-type': 'application/json'}
         r = requests.get(f'{self.base_url}/'
                          f'E-1R-AGILE-18-02-21-{self.area_code}/'
                          f'standard-unit-rates/{ date_from }{ date_to }', headers=headers)
         results = r.json()["results"]
+        _LOGGER.debug(r.url)
         return results
 
-    def get_rates(self, date_from, date_to):
+    def get_new_rates(self):
+        date_from = datetime.strftime(datetime.utcnow(), '%Y-%m-%dT%H:%M:%SZ')
+        return self.get_rates(date_from)
+
+    def get_rates(self, date_from, date_to=None):
         results = self.get_raw_rates(date_from, date_to)
 
         date_rates = collections.OrderedDict()
@@ -177,9 +198,35 @@ class Agile:
         print(f"Num Days:        {days}")
 
         # print(all_rates)
+
+    def get_previous_rate(self):
+        now = self.round_time(datetime.utcnow())
+        rounded_time = datetime.strftime(self.round_time(now), '%Y-%m-%dT%H:%M:%SZ')
+        prev_time = datetime.strftime(now - timedelta(minutes=30), '%Y-%m-%dT%H:%M:%SZ')
+        date_rates = self.get_rates(prev_time, rounded_time)["date_rates"]
+        return date_rates[next(iter(date_rates))]
+
+    def get_current_rate(self):
+        now = self.round_time(datetime.utcnow())
+        rounded_time = datetime.strftime(self.round_time(now), '%Y-%m-%dT%H:%M:%SZ')
+        next_time = datetime.strftime(now + timedelta(minutes=30), '%Y-%m-%dT%H:%M:%SZ')
+        date_rates = self.get_rates(rounded_time, next_time)["date_rates"]
+        return date_rates[next(iter(date_rates))]
+
+    def get_next_rate(self):
+        now = self.round_time(datetime.utcnow())
+        rounded_time = datetime.strftime(self.round_time(now) + timedelta(minutes=30), '%Y-%m-%dT%H:%M:%SZ')
+        next_time = datetime.strftime(now + timedelta(minutes=60), '%Y-%m-%dT%H:%M:%SZ')
+        date_rates = self.get_rates(rounded_time, next_time)["date_rates"]
+        return date_rates[next(iter(date_rates))]
+
 if __name__ == "__main__":
     myagile = Agile("L")
     rates = myagile.get_rates_delta(1)['date_rates']
     low_rates = myagile.get_times_below(rates, 0)
     print(low_rates)
     print(myagile.get_min_time_run(3, rates))
+    print("prev: ", myagile.get_previous_rate())
+    print("now: ", myagile.get_current_rate())
+    print("next: ", myagile.get_next_rate())
+    print("New: ", myagile.get_new_rates())
