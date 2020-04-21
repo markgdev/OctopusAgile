@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
   name = 'OctopusAgile',         # How you named your package folder (MyLib)
   packages = ['OctopusAgile'],   # Chose the same as "name"
-  version = '0.0.5',      # Start with a small number and increase it with every change you make
+  version = '0.0.6',      # Start with a small number and increase it with every change you make
   license='apache-2.0',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'A library to interface with the Octopus Agile API',   # Give a short description about your library
   long_description=long_description,
