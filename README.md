@@ -4,6 +4,12 @@ Init with the region code (Don't include the _) as per: https://en.wikipedia.org
 ## Referral code
 Feel free to use my referral code and get £50 credit to your account (as well as mine): https://share.octopus.energy/lilac-bison-793
 
+## Installation
+Now available in pypi!
+```
+pip install OctopusAgile
+```
+
 ## Methods
 ### Time format
 All time formats are "%Y-%m-%dT%H:%M:%SZ" e.g. 2020-04-16T06:00:00Z
