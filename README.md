@@ -1,13 +1,43 @@
 # OctopusAgile
-Init with the region code (Don't include the _) as per: https://en.wikipedia.org/wiki/Distribution_network_operator
+
+Init with the region code (Don't include the \_) as per: https://en.wikipedia.org/wiki/Distribution_network_operator
 
 ## Referral code
+
 Feel free to use my referral code and get £50 credit to your account (as well as mine): https://share.octopus.energy/lilac-bison-793
 
 ## Installation
+
 Now available in pypi!
+
 ```
 pip install OctopusAgile
+```
+
+## Usage
+
+### Octopus Agile
+
+```
+from OctopusAgile import Agile
+
+agile = Agile('N') # N is the region code for Southern Scotland
+agile.get_new_rates()
+agile.get_current_rate()
+agile.get_next_rate()
+agile.get_next_rate()
+
+### Octopus Outgoing
+```
+
+from OctopusAgile import Outgoing
+
+outgoing = Outgoing('N') # N is the region code for Southern Scotland
+outgoing.get_new_rates()
+outgoing.get_current_rate()
+outgoing.get_next_rate()
+outgoing.get_next_rate()
+
 ```
 
 ## Methods
@@ -65,3 +95,4 @@ Return the next period rate
 
 ### get_max_times(num, in_d)
 Get a date_rate dict of "num" number of max periods
+```
