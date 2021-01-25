@@ -28,7 +28,6 @@ agile.get_next_rate()
 agile.get_next_rate()
 
 ### Octopus Outgoing
-```
 
 from OctopusAgile import Outgoing
 
@@ -37,8 +36,6 @@ outgoing.get_new_rates()
 outgoing.get_current_rate()
 outgoing.get_next_rate()
 outgoing.get_next_rate()
-
-```
 
 ## Methods
 ### Time format
