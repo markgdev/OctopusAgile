@@ -174,15 +174,19 @@ class Agile:
         else:
             date_to = ""
         headers = {"content-type": "application/json"}
-        r = requests.get(
-            f"{self.base_url}/"
-            f"E-1R-AGILE-18-02-21-{self.area_code}/"
-            f"standard-unit-rates/{ date_from }{ date_to }",
-            headers=headers,
-        )
-        results = r.json()["results"]
-        _LOGGER.debug(r.url)
-        return results
+        try:
+            r = requests.get(
+                f"{self.base_url}/"
+                f"E-1R-AGILE-18-02-21-{self.area_code}/"
+                f"standard-unit-rates/{ date_from }{ date_to }",
+                headers=headers,
+            )
+            r.raise_for_status()
+            results = r.json()["results"]
+            _LOGGER.debug(r.url)
+            return results
+        except requests.exceptions.HTTPError as e:
+            _LOGGER.exception(f"Problem accessing Octopus API: {e}")
 
     def get_new_rates(self) -> dict:
         """
