@@ -24,10 +24,11 @@ class Agile:
             minute = 30
         return t.replace(second=0, microsecond=0, minute=minute, hour=t.hour)
 
-    def __init__(self, area_code):
+    def __init__(self, area_code, tariff_code: str = "AGILE-18-02-21"):
         self.area_code = area_code
+        self.tariff_code = tariff_code
         self.base_url = (
-            "https://api.octopus.energy/v1/products/AGILE-18-02-21/electricity-tariffs"
+            f"https://api.octopus.energy/v1/products/{tariff_code}/electricity-tariffs"
         )
 
     def get_times_below(self, in_d: dict, limit: float):
@@ -176,7 +177,7 @@ class Agile:
         headers = {"content-type": "application/json"}
         r = requests.get(
             f"{self.base_url}/"
-            f"E-1R-AGILE-18-02-21-{self.area_code}/"
+            f"E-1R-{self.tariff_code}-{self.area_code}/"
             f"standard-unit-rates/{ date_from }{ date_to }",
             headers=headers,
         )
